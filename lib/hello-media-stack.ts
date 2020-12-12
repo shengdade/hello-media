@@ -35,7 +35,6 @@ export class HelloMediaStack extends cdk.Stack {
       handler: 'index.handler',
       environment: {
         bucket: bucket.bucketName,
-        endpoint: 'https://4l8tgbpha.mediaconvert.us-west-2.amazonaws.com',
         jobTemplate: template.defaultVideoJobTemplate.name!,
         mediaConvertRole: mediaConvertRole.roleArn
       },

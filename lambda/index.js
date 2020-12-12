@@ -3,14 +3,13 @@ const AWS = require('aws-sdk');
 exports.handler = async (event, context, callback) => {
   const s3Key = event.Records[0].s3.object.key;
 
-  // Avoid infinite call for converted and poster medias
-  if (s3Key.match(/(-converted|-poster)/gi)) return;
+  // Avoid infinite call for converted medias
+  if (s3Key.match(/output/gi)) return;
 
   const [destination = ''] = s3Key.match(/.*\//) || [];
 
   const MediaConvert = new AWS.MediaConvert({
-    apiVersion: '2017-08-29',
-    endpoint: process.env.endpoint
+    apiVersion: '2017-08-29'
   });
 
   const Height = 720;
@@ -28,7 +27,7 @@ exports.handler = async (event, context, callback) => {
     OutputGroupSettings: {
       FileGroupSettings: {
         // Use env variable to set the bucket
-        Destination: `s3://${process.env.bucket}/${destination}`
+        Destination: `s3://${process.env.bucket}/output/${destination}`
       }
     }
   };
@@ -39,10 +38,7 @@ exports.handler = async (event, context, callback) => {
     Settings: {
       Inputs: [
         {
-          FileInput: `s3://${process.env.bucket}/${s3Key}`,
-          VideoSelector: {
-            Rotate: 'AUTO'
-          }
+          FileInput: `s3://${process.env.bucket}/${s3Key}`
         }
       ],
       // First one for screenshot, second one for video
