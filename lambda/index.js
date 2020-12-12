@@ -9,7 +9,8 @@ exports.handler = async (event, context, callback) => {
   const [destination = ''] = s3Key.match(/.*\//) || [];
 
   const MediaConvert = new AWS.MediaConvert({
-    apiVersion: '2017-08-29'
+    apiVersion: '2017-08-29',
+    endpoint: process.env.endpoint
   });
 
   const Height = 720;
