@@ -1,7 +1,7 @@
-import * as mediaconvert from '@aws-cdk/aws-mediaconvert';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
-import { getJobTemplate } from '../config/job_template_settings';
+import { MediaConvertJobTemplates } from './media-convert-job-templates';
+import { MediaConvertPresets } from './media-convert-presets';
 
 export class HelloMediaStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -11,10 +11,10 @@ export class HelloMediaStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    const template = getJobTemplate(bucket.bucketName);
-    const jobTemplate = new mediaconvert.CfnJobTemplate(this, 'JobTemplate', {
-      settingsJson: template.Settings,
-      name: template.Name
+    let presets = new MediaConvertPresets(this, `${id}-MediaConvertPresets`);
+
+    new MediaConvertJobTemplates(this, `${id}-MediaConvertJobTemplates`, {
+      presets: presets
     });
   }
 }
